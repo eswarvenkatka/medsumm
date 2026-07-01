@@ -1,0 +1,21 @@
+# Python environment & cache
+backend/venv/
+backend/.env
+__pycache__/
+backend/.pytest_cache/
+
+# Local databases
+backend/local_firestore.json
+backend/local_qdrant_db/
+
+# Next.js frontend dependencies & build outputs
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.env.local
+frontend/tsconfig.tsbuildinfo
+frontend/.firebase/
+
+# OS files
+.DS_Store
+Thumbs.db

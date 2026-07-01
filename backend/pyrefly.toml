@@ -1,0 +1,6 @@
+# Pyrefly configuration for the backend
+# Points to the virtual environment so Pyrefly can resolve all installed packages
+
+[python]
+# Use the venv Python interpreter so Pyrefly finds all installed packages
+python_interpreter = "venv/Scripts/python.exe"
