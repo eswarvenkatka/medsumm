@@ -4,7 +4,7 @@ from app.config import settings
 import uuid
 import os
 
-COLLECTION_NAME = "medsumm_documents"
+COLLECTION_NAME = "medsumm_documents_v3"
 
 def _clear_local_lock():
     """Remove stale lock file left by a previous crashed process."""
@@ -72,7 +72,7 @@ def ensure_collection():
             client.create_collection(
                 collection_name=COLLECTION_NAME,
                 vectors_config=qmodels.VectorParams(
-                    size=768,  # Gemini text-embedding-004 dimension
+                    size=3072,  # Gemini gemini-embedding-001 dimension
                     distance=qmodels.Distance.COSINE
                 )
             )

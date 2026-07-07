@@ -1,9 +1,9 @@
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from app.config import settings
 
-# Initialize Embeddings Client using Google's text-embedding-004
+# Initialize Embeddings Client using Google's gemini-embedding-001
 embeddings_client = GoogleGenerativeAIEmbeddings(
-    model="models/text-embedding-004",
+    model="models/gemini-embedding-001",
     google_api_key=settings.GEMINI_API_KEY
 )
 
