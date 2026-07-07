@@ -17,7 +17,8 @@ def invoke_llm_with_fallback(messages, temperature=0.1) -> str:
                 model=model_name,
                 google_api_key=settings.GEMINI_API_KEY,
                 temperature=temperature,
-                max_retries=2
+                max_retries=2,
+                convert_system_message_to_human=True
             )
             response = llm_client.invoke(messages)
             return response.content.strip()
