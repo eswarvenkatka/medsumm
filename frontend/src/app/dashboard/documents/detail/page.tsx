@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import Navbar from "@/components/Navbar";
+import { getApiUrl } from "@/lib/utils";
 import { 
   FileText, Calendar, AlertTriangle, ArrowLeft, Download, 
   Send, Bot, User as UserIcon, Loader2, BookOpen, HeartPulse, Sparkles
@@ -69,7 +70,7 @@ function DocumentDetailContent() {
     const fetchData = async () => {
       if (!token || !id) return;
       try {
-        const docResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/documents/${id}`, {
+        const docResponse = await fetch(`${getApiUrl()}/api/documents/${id}`, {
           headers: { "Authorization": `Bearer ${token}` }
         });
         if (docResponse.ok) {
@@ -79,7 +80,7 @@ function DocumentDetailContent() {
           router.push("/dashboard");
         }
 
-        const chatResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/documents/${id}/chats`, {
+        const chatResponse = await fetch(`${getApiUrl()}/api/documents/${id}/chats`, {
           headers: { "Authorization": `Bearer ${token}` }
         });
         if (chatResponse.ok) {
@@ -121,7 +122,7 @@ function DocumentDetailContent() {
     setChats(prev => [...prev, tempMessage]);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/documents/${id}/query`, {
+      const response = await fetch(`${getApiUrl()}/api/documents/${id}/query`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import Navbar from "@/components/Navbar";
+import { getApiUrl } from "@/lib/utils";
 import { 
   FileText, AlertTriangle, Eye, Loader2, Plus 
 } from "lucide-react";
@@ -36,7 +37,7 @@ export default function DashboardPage() {
     const fetchDocs = async () => {
       if (!token) return;
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/documents`, {
+        const response = await fetch(`${getApiUrl()}/api/documents`, {
           headers: {
             "Authorization": `Bearer ${token}`
           }

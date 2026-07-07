@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import Navbar from "@/components/Navbar";
+import { getApiUrl } from "@/lib/utils";
 import { 
   ShieldAlert, Users, FileText, Database, 
   Loader2, AlertTriangle, Eye
@@ -60,7 +61,7 @@ export default function AdminPage() {
     const fetchAdminStats = async () => {
       if (!token || !authorized) return;
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/admin/stats`, {
+        const response = await fetch(`${getApiUrl()}/api/admin/stats`, {
           headers: {
             "Authorization": `Bearer ${token}`
           }

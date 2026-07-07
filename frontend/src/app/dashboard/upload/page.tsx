@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import Navbar from "@/components/Navbar";
+import { getApiUrl } from "@/lib/utils";
 import { UploadCloud, FileText, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 
 type UploadState = "idle" | "uploading" | "parsing" | "summarizing" | "indexing" | "completed" | "error";
@@ -64,7 +65,7 @@ export default function UploadPage() {
         setProgress(80);
       }, 4500);
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/documents/upload`, {
+      const response = await fetch(`${getApiUrl()}/api/documents/upload`, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`

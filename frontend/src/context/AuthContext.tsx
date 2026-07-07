@@ -10,6 +10,7 @@ import {
   User 
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
+import { getApiUrl } from "@/lib/utils";
 
 interface AuthContextType {
   user: User | null;
@@ -31,7 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const syncWithBackend = async (firebaseUser: User, jwtToken: string) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/auth/sync`, {
+      const response = await fetch(`${getApiUrl()}/api/auth/sync`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
