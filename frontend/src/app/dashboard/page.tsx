@@ -60,7 +60,7 @@ export default function DashboardPage() {
     }
   }, [token]);
 
-  if (authLoading || (loading && !token)) {
+  if (authLoading || (loading && token)) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-950">
         <Loader2 className="h-8 w-8 text-indigo-500 animate-spin" />

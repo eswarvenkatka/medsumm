@@ -152,7 +152,7 @@ function DocumentDetailContent() {
     handleSendQuery(query);
   };
 
-  if (authLoading || (loading && !document)) {
+  if (authLoading || (loading && token && id)) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-950">
         <Loader2 className="h-8 w-8 text-indigo-500 animate-spin" />
