@@ -60,13 +60,15 @@ export default function DashboardPage() {
     }
   }, [token]);
 
-  if (authLoading || (loading && token)) {
+  if (authLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-950">
-        <Loader2 className="h-8 w-8 text-indigo-500 animate-spin" />
+        <Loader2 className="h-8 w-8 text-[#3B7E96] animate-spin" />
       </div>
     );
   }
+
+  if (!user) return null;
 
   const highRiskCount = documents.filter(doc => doc.summary?.risk_level?.toUpperCase().includes("HIGH")).length;
   const medRiskCount = documents.filter(doc => doc.summary?.risk_level?.toUpperCase().includes("MEDIUM")).length;
@@ -124,7 +126,7 @@ export default function DashboardPage() {
           <div className="p-5 rounded-2xl glass-card transition-all duration-300 border-slate-800/80 hover:border-slate-700/85">
             <p className="text-slate-500 text-xs font-bold uppercase tracking-wider">Clinical Files</p>
             <div className="flex items-baseline gap-2 mt-3">
-              <h3 className="text-3.5xl font-black text-white">{documents.length}</h3>
+              <h3 className="text-3.5xl font-black text-white">{loading ? "..." : documents.length}</h3>
               <span className="text-[10px] text-slate-400 font-medium">total uploads</span>
             </div>
           </div>
@@ -136,7 +138,7 @@ export default function DashboardPage() {
               <ShieldAlert className="h-4 w-4 text-red-500/60" />
             </div>
             <div className="flex items-baseline gap-2 mt-3">
-              <h3 className="text-3.5xl font-black text-red-500 group-hover:scale-105 transition-transform">{highRiskCount}</h3>
+              <h3 className="text-3.5xl font-black text-red-500 group-hover:scale-105 transition-transform">{loading ? "..." : highRiskCount}</h3>
               <span className="text-[10px] text-red-450/80 font-medium">requires review</span>
             </div>
           </div>
@@ -148,7 +150,7 @@ export default function DashboardPage() {
               <AlertTriangle className="h-4 w-4 text-yellow-500/60" />
             </div>
             <div className="flex items-baseline gap-2 mt-3">
-              <h3 className="text-3.5xl font-black text-yellow-500 group-hover:scale-105 transition-transform">{medRiskCount}</h3>
+              <h3 className="text-3.5xl font-black text-yellow-500 group-hover:scale-105 transition-transform">{loading ? "..." : medRiskCount}</h3>
               <span className="text-[10px] text-yellow-450/85 font-medium">moderate status</span>
             </div>
           </div>
@@ -160,7 +162,7 @@ export default function DashboardPage() {
               <CheckCircle2 className="h-4 w-4 text-emerald-550/60" />
             </div>
             <div className="flex items-baseline gap-2 mt-3">
-              <h3 className="text-3.5xl font-black text-emerald-500 group-hover:scale-105 transition-transform">{lowRiskCount}</h3>
+              <h3 className="text-3.5xl font-black text-emerald-500 group-hover:scale-105 transition-transform">{loading ? "..." : lowRiskCount}</h3>
               <span className="text-[10px] text-emerald-450/80 font-medium">normal parameters</span>
             </div>
           </div>
@@ -202,12 +204,22 @@ export default function DashboardPage() {
         <div className="rounded-2xl border border-slate-800/80 bg-slate-900/10 backdrop-blur-md overflow-hidden shadow-2xl">
           <div className="p-6 border-b border-slate-800/80 flex items-center justify-between">
             <h2 className="text-base font-bold text-white flex items-center gap-2">
-              <FileText className="h-4 w-4 text-indigo-400" /> Patient Intake Register
+              <FileText className="h-4 w-4 text-[#3B7E96]" /> Patient Intake Register
             </h2>
-            <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider">{filteredDocs.length} of {documents.length} files</span>
+            <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider">
+              {loading ? "Loading..." : `${filteredDocs.length} of ${documents.length} files`}
+            </span>
           </div>
 
-          {filteredDocs.length === 0 ? (
+          {loading ? (
+            <div className="py-24 text-center">
+              <Loader2 className="h-10 w-10 text-[#3B7E96] animate-spin mx-auto mb-4" />
+              <p className="text-slate-400 font-bold text-sm">Loading clinical database...</p>
+              <p className="text-slate-550 text-xs mt-1 max-w-md mx-auto">
+                Connecting to workspace. Render's free tier may take up to a minute to wake up.
+              </p>
+            </div>
+          ) : filteredDocs.length === 0 ? (
             <div className="py-24 text-center">
               <FileText className="h-14 w-14 text-slate-800 mx-auto mb-4" />
               <p className="text-slate-400 font-bold text-sm">No clinical files detected</p>
