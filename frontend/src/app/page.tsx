@@ -14,21 +14,21 @@ export default function Home() {
       <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-cyan-500/10 blur-[120px] animate-float -z-10" />
       
       {/* Header */}
-      <header className="border-b border-slate-900/60 bg-slate-950/70 backdrop-blur-xl sticky top-0 z-50 transition-all">
+      <header className="border-b border-[rgba(78,157,184,0.15)] bg-white/90 backdrop-blur-md sticky top-0 z-50 transition-all shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 group cursor-pointer">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-indigo-500 to-cyan-400 p-0.5 flex items-center justify-center shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-300">
-              <Activity className="h-5 w-5 text-white animate-pulse" />
+            <div className="h-9 w-9 rounded-xl bg-[#3B7E96]/10 flex items-center justify-center border border-[#3B7E96]/20 group-hover:scale-105 transition-transform duration-300">
+              <Activity className="h-5 w-5 text-[#3B7E96] animate-pulse" />
             </div>
-            <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
-              MedSumm AI
+            <span className="text-xl font-bold tracking-tight text-[#1e293b] group-hover:text-[#3B7E96] transition-colors">
+              MedSumm <span className="text-[#3B7E96]">AI</span>
             </span>
           </div>
           <nav className="flex items-center gap-4">
             {user ? (
               <Link
                 href="/dashboard"
-                className="px-5 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-500 hover:opacity-90 text-sm font-semibold text-white transition-all shadow-lg shadow-indigo-600/20 hover:shadow-indigo-600/30 flex items-center gap-1.5"
+                className="px-5 py-2 rounded-xl bg-[#3B7E96]/10 text-[#3B7E96] border border-[#3B7E96]/20 hover:bg-[#3B7E96]/20 text-sm font-semibold transition-all flex items-center gap-1.5"
               >
                 Dashboard
                 <ArrowRight className="h-4 w-4" />
@@ -37,13 +37,13 @@ export default function Home() {
               <>
                 <Link
                   href="/login"
-                  className="text-sm font-semibold text-slate-350 hover:text-white transition-colors px-3 py-2 rounded-xl hover:bg-slate-900/55"
+                  className="text-sm font-semibold text-[#475569] hover:text-[#1e293b] transition-colors px-3 py-2 rounded-xl hover:bg-slate-100"
                 >
                   Sign In
                 </Link>
                 <Link
                   href="/register"
-                  className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-sm font-semibold transition-all shadow-lg shadow-indigo-600/20 hover:scale-[1.02]"
+                  className="px-5 py-2.5 rounded-xl bg-[#3B7E96]/10 text-[#3B7E96] border border-[#3B7E96]/20 hover:bg-[#3B7E96]/20 text-sm font-semibold transition-all hover:scale-[1.02]"
                 >
                   Get Started
                 </Link>

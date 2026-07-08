@@ -40,7 +40,14 @@ export default function UploadPage() {
 
   const handleUploadSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!file || !token) return;
+    if (!file) {
+      setErrorMsg("No file selected. Please select a PDF or DOCX file to proceed.");
+      return;
+    }
+    if (!token) {
+      setErrorMsg("Authentication token is missing or loading. Please wait a moment, refresh the page, or sign out and sign in again.");
+      return;
+    }
 
     setUploadState("uploading");
     setProgress(20);
