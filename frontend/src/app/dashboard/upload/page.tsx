@@ -38,7 +38,7 @@ export default function UploadPage() {
     }
   };
 
-  const handleUploadSubmit = async (e: React.FormEvent) => {
+  const handleUploadSubmit = async (e: React.FormEvent | React.MouseEvent) => {
     e.preventDefault();
     if (!file) {
       setErrorMsg("No file selected. Please select a PDF or DOCX file to proceed.");
@@ -183,8 +183,9 @@ export default function UploadPage() {
 
               <button
                 type="submit"
+                onClick={handleUploadSubmit}
                 disabled={!file}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 font-bold text-white transition-all shadow-lg shadow-indigo-600/20 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.01]"
+                className="w-full py-3.5 rounded-xl bg-[#3B7E96]/10 text-[#3B7E96] border border-[#3B7E96]/30 hover:bg-[#3B7E96]/20 font-bold transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.01] cursor-pointer"
               >
                 Start Processing Workspace
               </button>
