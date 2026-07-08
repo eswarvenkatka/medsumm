@@ -57,18 +57,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (currentUser) {
         setUser(currentUser);
         try {
-          const jwtToken = await currentUser.getIdToken(true);
+          // Get the cached token instead of forcing a network call on every load
+          const jwtToken = await currentUser.getIdToken();
           setToken(jwtToken);
-          await syncWithBackend(currentUser, jwtToken);
+          
+          // Let the app know authentication is ready so the UI can mount immediately
+          setLoading(false);
+          
+          // Sync backend in the background without blocking the UI rendering thread
+          syncWithBackend(currentUser, jwtToken);
         } catch (e) {
           console.error("Failed to retrieve JWT token", e);
+          setLoading(false);
         }
       } else {
         setUser(null);
         setToken(null);
         setRole(null);
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     return () => unsubscribe();
@@ -90,7 +97,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const result = await createUserWithEmailAndPassword(auth, email, password);
       if (result.user) {
         await updateProfile(result.user, { displayName: name });
-        const jwtToken = await result.user.getIdToken(true);
+        const jwtToken = await result.user.getIdToken();
         setToken(jwtToken);
         await syncWithBackend(result.user, jwtToken);
       }
