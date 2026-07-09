@@ -40,13 +40,13 @@ export default function UploadPage() {
 
   const handleUploadSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert("handleUploadSubmit called. File: " + (file ? file.name : "none") + ", Token exists: " + (token ? "yes" : "no"));
+    console.log("handleUploadSubmit called. File:", file?.name, "Token exists:", !!token);
     if (!file) {
       setErrorMsg("No file selected. Please select a PDF or DOCX file to proceed.");
       return;
     }
     if (!token) {
-      alert("Error: Firebase token is missing!");
+      console.warn("Upload blocked: Token is missing");
       setErrorMsg("Authentication token is missing or loading. Please wait a moment, refresh the page, or sign out and sign in again.");
       return;
     }
@@ -74,7 +74,7 @@ export default function UploadPage() {
         setProgress(80);
       }, 4500);
 
-      alert("Sending POST request to: " + `${getApiUrl()}/api/documents/upload`);
+      console.log("Sending POST request to:", `${getApiUrl()}/api/documents/upload`);
       const response = await fetch(`${getApiUrl()}/api/documents/upload`, {
         method: "POST",
         headers: {
@@ -88,7 +88,7 @@ export default function UploadPage() {
       clearTimeout(timer3);
 
       if (response.ok) {
-        alert("Upload succeeded!");
+        console.log("Upload succeeded. Redirecting...");
         setProgress(100);
         setUploadState("completed");
         const docData = await response.json();
@@ -98,11 +98,11 @@ export default function UploadPage() {
         }, 1200);
       } else {
         const errorData = await response.json();
-        alert("Upload failed with status: " + response.status + "\nDetail: " + JSON.stringify(errorData));
+        console.error("Upload failed with status:", response.status, errorData);
         throw new Error(errorData.detail || "Upload process failed.");
       }
     } catch (err: any) {
-      alert("Error caught: " + err.message);
+      console.error("Upload error caught:", err);
       setErrorMsg(err.message || "Failed to process and index the document.");
       setUploadState("error");
       setProgress(0);
