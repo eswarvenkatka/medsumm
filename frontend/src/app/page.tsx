@@ -148,7 +148,7 @@ export default function Home() {
                 <div className="h-12 w-12 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-300">
                   <FileText className="h-6 w-6" />
                 </div>
-                <h3 className="text-xl font-bold mb-3 text-white">Advanced Extraction</h3>
+                <h3 className="text-xl font-bold mb-3 text-slate-100">Advanced Extraction</h3>
                 <p className="text-slate-400 text-sm leading-relaxed">
                   Support for PDFs and DOCX files. Clean parser extracts plaintext and segments reports into clean, structured categories.
                 </p>
@@ -160,9 +160,9 @@ export default function Home() {
                 <div className="h-12 w-12 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-300">
                   <Brain className="h-6 w-6" />
                 </div>
-                <h3 className="text-xl font-bold mb-3 text-white">Clinical Summarization</h3>
+                <h3 className="text-xl font-bold mb-3 text-slate-100">Clinical Summarization</h3>
                 <p className="text-slate-400 text-sm leading-relaxed">
-                  Powered by Gemini 2.5 Flash. Delivers structured data covering diagnostic reports, patient assessments, and key medical warnings.
+                  Delivers structured data covering diagnostic reports, patient assessments, and key medical warnings.
                 </p>
               </div>
 
@@ -172,7 +172,7 @@ export default function Home() {
                 <div className="h-12 w-12 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-300">
                   <Cpu className="h-6 w-6" />
                 </div>
-                <h3 className="text-xl font-bold mb-3 text-white">RAG Contextual Chat</h3>
+                <h3 className="text-xl font-bold mb-3 text-slate-100">RAG Contextual Chat</h3>
                 <p className="text-slate-400 text-sm leading-relaxed">
                   Query documents interactively. Text-embedding-004 index vectors stored inside Qdrant Cloud fetch precise relevant context blocks.
                 </p>

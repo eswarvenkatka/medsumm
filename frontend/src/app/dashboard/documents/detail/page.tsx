@@ -187,12 +187,12 @@ function DocumentDetailContent() {
           <div className="flex items-center gap-4">
             <button
               onClick={() => router.push("/dashboard")}
-              className="p-2.5 rounded-xl border border-slate-800 hover:border-slate-700 bg-slate-900/40 text-slate-400 hover:text-white transition-all shadow-inner"
+              className="p-2.5 rounded-xl border border-slate-800 hover:border-slate-700 bg-slate-900/40 text-slate-400 hover:text-slate-100 transition-all shadow-inner"
             >
               <ArrowLeft className="h-4.5 w-4.5" />
             </button>
             <div>
-              <h1 className="text-2xl font-bold flex items-center gap-2.5 text-white">
+              <h1 className="text-2xl font-bold flex items-center gap-2.5 text-slate-100">
                 <FileText className="h-5.5 w-5.5 text-indigo-400" />
                 {document.filename}
               </h1>
@@ -228,7 +228,7 @@ function DocumentDetailContent() {
                 href={document.cloudinary_url}
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white text-xs font-bold bg-slate-900/30 transition-all shadow-md"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-slate-100 text-xs font-bold bg-slate-900/30 transition-all shadow-md"
               >
                 <Download className="h-4 w-4 text-indigo-400" />
                 Original Scan
@@ -270,7 +270,7 @@ function DocumentDetailContent() {
               {/* Summary details */}
               <div className="lg:col-span-2 space-y-6">
                 <div className="p-6 rounded-2xl border border-slate-800 bg-slate-900/10 backdrop-blur-sm">
-                  <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2.5 mb-5 border-b border-slate-900 pb-3">
+                  <h3 className="text-sm font-bold text-slate-100 uppercase tracking-wider flex items-center gap-2.5 mb-5 border-b border-slate-900 pb-3">
                     <HeartPulse className="h-4.5 w-4.5 text-red-500 animate-pulse" />
                     Intake & Patient Information
                   </h3>
@@ -287,7 +287,7 @@ function DocumentDetailContent() {
                 </div>
 
                 <div className="p-6 rounded-2xl border border-slate-800 bg-slate-900/10 backdrop-blur-sm">
-                  <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2.5 mb-4 border-b border-slate-900 pb-3">
+                  <h3 className="text-sm font-bold text-slate-100 uppercase tracking-wider flex items-center gap-2.5 mb-4 border-b border-slate-900 pb-3">
                     <Clipboard className="h-4.5 w-4.5 text-indigo-400" />
                     Diagnostic Lab Findings
                   </h3>
@@ -297,7 +297,7 @@ function DocumentDetailContent() {
                 </div>
 
                 <div className="p-6 rounded-2xl border border-slate-800 bg-slate-900/10 backdrop-blur-sm">
-                  <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2.5 mb-4 border-b border-slate-900 pb-3">
+                  <h3 className="text-sm font-bold text-slate-100 uppercase tracking-wider flex items-center gap-2.5 mb-4 border-b border-slate-900 pb-3">
                     <HeartPulse className="h-4.5 w-4.5 text-cyan-400" />
                     Clinical Assessment
                   </h3>
@@ -310,7 +310,7 @@ function DocumentDetailContent() {
               {/* Recommendations and Glossary */}
               <div className="space-y-6">
                 <div className="p-6 rounded-2xl border border-slate-800 bg-slate-900/20 backdrop-blur-sm">
-                  <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-5 border-b border-slate-900 pb-3">
+                  <h3 className="text-sm font-bold text-slate-100 uppercase tracking-wider mb-5 border-b border-slate-900 pb-3">
                     Clinical Plan & Recommendations
                   </h3>
                   {document.summary.recommendations && document.summary.recommendations.length > 0 ? (
@@ -328,7 +328,7 @@ function DocumentDetailContent() {
                 </div>
 
                 <div className="p-6 rounded-2xl border border-slate-800 bg-slate-900/20 backdrop-blur-sm">
-                  <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-5 border-b border-slate-900 pb-3">
+                  <h3 className="text-sm font-bold text-slate-100 uppercase tracking-wider mb-5 border-b border-slate-900 pb-3">
                     Medical Terms Glossary
                   </h3>
                   {document.summary.glossary && document.summary.glossary.length > 0 ? (
@@ -368,7 +368,7 @@ function DocumentDetailContent() {
                         <button
                           key={idx}
                           onClick={() => handleSendQuery(chip)}
-                          className="px-3.5 py-2 rounded-xl border border-slate-800/80 hover:border-slate-700 bg-slate-950/40 hover:bg-slate-900/60 text-[11px] font-semibold text-slate-350 hover:text-white transition-all cursor-pointer shadow-sm text-left max-w-[280px] sm:max-w-xs truncate"
+                          className="px-3.5 py-2 rounded-xl border border-slate-800/80 hover:border-slate-700 bg-slate-950/40 hover:bg-slate-900/60 text-[11px] font-semibold text-slate-350 hover:text-slate-100 transition-all cursor-pointer shadow-sm text-left max-w-[280px] sm:max-w-xs truncate"
                         >
                           {chip}
                         </button>

@@ -131,7 +131,7 @@ export default function UploadPage() {
         <div className="mb-6">
           <button
             onClick={() => router.push("/dashboard")}
-            className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors"
+            className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-100 transition-colors"
           >
             <ArrowLeft className="h-3.5 w-3.5" /> Back to Dashboard
           </button>
@@ -141,7 +141,7 @@ export default function UploadPage() {
           <div className="absolute -inset-0.5 rounded-3xl bg-gradient-to-r from-indigo-500/5 to-cyan-500/5 blur opacity-60 pointer-events-none" />
           
           <div className="text-center mb-8 relative">
-            <h1 className="text-2xl font-extrabold text-white flex items-center justify-center gap-2">
+            <h1 className="text-2xl font-extrabold text-slate-100 flex items-center justify-center gap-2">
               <UploadCloud className="h-6 w-6 text-indigo-400" /> Upload Medical Record
             </h1>
             <p className="text-slate-450 text-xs mt-1.5 max-w-md mx-auto">
@@ -211,7 +211,7 @@ export default function UploadPage() {
               </div>
               
               <div className="space-y-2">
-                <h3 className="text-lg font-bold text-white capitalize flex items-center justify-center gap-2">
+                <h3 className="text-lg font-bold text-slate-100 capitalize flex items-center justify-center gap-2">
                   {uploadState === "uploading" && (
                     <>
                       <UploadCloud className="h-4 w-4 text-indigo-400" /> Uploading clinical file...

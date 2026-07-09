@@ -79,7 +79,7 @@ export default function LoginPage() {
                 <Shield className="h-3 w-3 text-indigo-400" />
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-200">Gemini 2.5 Flash Parsing</p>
+                <p className="text-xs font-bold text-slate-200">Clinical Document Parsing</p>
                 <p className="text-xs text-slate-500 mt-0.5">Parse PDF scan documents into clear diagnostic and glossary outputs.</p>
               </div>
             </div>
@@ -102,7 +102,7 @@ export default function LoginPage() {
             <div className="lg:hidden h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-cyan-400 p-0.5 flex items-center justify-center mb-4">
               <Activity className="h-6 w-6 text-white animate-pulse" />
             </div>
-            <h2 className="text-3xl font-extrabold tracking-tight text-white">
+            <h2 className="text-3xl font-extrabold tracking-tight text-slate-100">
               Welcome Back
             </h2>
             <p className="mt-2 text-sm text-slate-400">

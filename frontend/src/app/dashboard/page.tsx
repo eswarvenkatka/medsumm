@@ -103,7 +103,7 @@ export default function DashboardPage() {
         {/* Welcome Header */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-10">
           <div>
-            <h1 className="text-3xl font-extrabold tracking-tight text-white flex items-center gap-2.5">
+            <h1 className="text-3xl font-extrabold tracking-tight text-slate-100 flex items-center gap-2.5">
               Clinical Workspace
             </h1>
             <p className="text-slate-400 text-sm mt-1">
@@ -126,7 +126,7 @@ export default function DashboardPage() {
           <div className="p-5 rounded-2xl glass-card transition-all duration-300 border-slate-800/80 hover:border-slate-700/85">
             <p className="text-slate-500 text-xs font-bold uppercase tracking-wider">Clinical Files</p>
             <div className="flex items-baseline gap-2 mt-3">
-              <h3 className="text-3.5xl font-black text-white">{loading ? "..." : documents.length}</h3>
+              <h3 className="text-3.5xl font-black text-slate-100">{loading ? "..." : documents.length}</h3>
               <span className="text-[10px] text-slate-400 font-medium">total uploads</span>
             </div>
           </div>
@@ -203,7 +203,7 @@ export default function DashboardPage() {
         {/* Document list */}
         <div className="rounded-2xl border border-slate-800/80 bg-slate-900/10 backdrop-blur-md overflow-hidden shadow-2xl">
           <div className="p-6 border-b border-slate-800/80 flex items-center justify-between">
-            <h2 className="text-base font-bold text-white flex items-center gap-2">
+            <h2 className="text-base font-bold text-slate-100 flex items-center gap-2">
               <FileText className="h-4 w-4 text-[#3B7E96]" /> Patient Intake Register
             </h2>
             <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider">
@@ -226,7 +226,7 @@ export default function DashboardPage() {
               <p className="text-slate-550 text-xs mt-1 max-w-sm mx-auto">Upload a medical scan (PDF/DOCX) to parse parameters and establish a RAG container.</p>
               <Link
                 href="/dashboard/upload"
-                className="mt-6 inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl border border-slate-800 hover:border-slate-700 text-xs font-semibold text-slate-300 hover:text-white transition-all bg-slate-950/40"
+                className="mt-6 inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl border border-slate-800 hover:border-slate-700 text-xs font-semibold text-slate-300 hover:text-slate-100 transition-all bg-slate-950/40"
               >
                 Upload File
               </Link>
@@ -288,7 +288,7 @@ export default function DashboardPage() {
                         <td className="py-4.5 px-6 text-right">
                           <Link
                             href={`/dashboard/documents/detail?id=${doc.id}`}
-                            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-850 border border-slate-800 text-xs font-bold text-slate-200 hover:text-white transition-all shadow-md"
+                            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-850 border border-slate-800 text-xs font-bold text-slate-200 hover:text-slate-100 transition-all shadow-md"
                           >
                             <Eye className="h-3.5 w-3.5 text-indigo-400" />
                             Summarize
