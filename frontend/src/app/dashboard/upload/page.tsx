@@ -137,7 +137,7 @@ export default function UploadPage() {
         </div>
 
         <div className="p-8 sm:p-10 rounded-3xl bg-slate-900/40 border border-slate-800 backdrop-blur-xl shadow-2xl relative">
-          <div className="absolute -inset-0.5 rounded-3xl bg-gradient-to-r from-indigo-500/5 to-cyan-500/5 blur opacity-60" />
+          <div className="absolute -inset-0.5 rounded-3xl bg-gradient-to-r from-indigo-500/5 to-cyan-500/5 blur opacity-60 pointer-events-none" />
           
           <div className="text-center mb-8 relative">
             <h1 className="text-2xl font-extrabold text-white flex items-center justify-center gap-2">
@@ -189,9 +189,9 @@ export default function UploadPage() {
               <button
                 type="submit"
                 disabled={!file}
-                className="w-full py-3.5 rounded-xl bg-[#3B7E96]/10 text-[#3B7E96] border border-[#3B7E96]/30 hover:bg-[#3B7E96]/20 font-bold transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.01] cursor-pointer"
+                className="w-full py-3.5 rounded-xl bg-[#3B7E96] hover:bg-[#2F657A] text-white font-bold transition-all shadow-lg shadow-[#3B7E96]/20 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
               >
-                Start Processing Workspace
+                Proceed
               </button>
             </form>
           ) : (
