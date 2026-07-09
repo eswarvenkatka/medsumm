@@ -38,13 +38,15 @@ export default function UploadPage() {
     }
   };
 
-  const handleUploadSubmit = async (e: React.FormEvent | React.MouseEvent) => {
+  const handleUploadSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("handleUploadSubmit called. File:", file?.name, "Token exists:", !!token);
     if (!file) {
       setErrorMsg("No file selected. Please select a PDF or DOCX file to proceed.");
       return;
     }
     if (!token) {
+      console.warn("Upload blocked: Token is missing");
       setErrorMsg("Authentication token is missing or loading. Please wait a moment, refresh the page, or sign out and sign in again.");
       return;
     }
@@ -85,6 +87,7 @@ export default function UploadPage() {
       clearTimeout(timer3);
 
       if (response.ok) {
+        console.log("Upload succeeded. Redirecting...");
         setProgress(100);
         setUploadState("completed");
         const docData = await response.json();
@@ -94,10 +97,11 @@ export default function UploadPage() {
         }, 1200);
       } else {
         const errorData = await response.json();
+        console.error("Upload failed with status:", response.status, errorData);
         throw new Error(errorData.detail || "Upload process failed.");
       }
     } catch (err: any) {
-      console.error(err);
+      console.error("Upload error caught:", err);
       setErrorMsg(err.message || "Failed to process and index the document.");
       setUploadState("error");
       setProgress(0);
@@ -183,7 +187,6 @@ export default function UploadPage() {
 
               <button
                 type="submit"
-                onClick={handleUploadSubmit}
                 disabled={!file}
                 className="w-full py-3.5 rounded-xl bg-[#3B7E96]/10 text-[#3B7E96] border border-[#3B7E96]/30 hover:bg-[#3B7E96]/20 font-bold transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.01] cursor-pointer"
               >
