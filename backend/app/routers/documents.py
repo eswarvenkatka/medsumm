@@ -27,10 +27,10 @@ async def upload_file(
     
     # Basic extension validation
     ext = filename.split(".")[-1].lower()
-    if ext not in ["pdf", "docx", "doc", "txt"]:
+    if ext not in ["pdf", "docx", "doc", "txt", "png", "jpg", "jpeg", "webp"]:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Unsupported file format. Please upload a PDF, DOCX or TXT file."
+            detail="Unsupported file format. Please upload a PDF, DOCX, TXT, or Image (PNG, JPG, JPEG, WEBP) file."
         )
         
     try:

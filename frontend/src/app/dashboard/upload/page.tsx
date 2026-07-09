@@ -28,8 +28,9 @@ export default function UploadPage() {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
       const ext = selectedFile.name.split(".").pop()?.toLowerCase();
-      if (ext !== "pdf" && ext !== "docx" && ext !== "doc") {
-        setErrorMsg("Unsupported format. Please select a PDF or DOCX file.");
+      const allowedExts = ["pdf", "docx", "doc", "png", "jpg", "jpeg", "webp"];
+      if (!ext || !allowedExts.includes(ext)) {
+        setErrorMsg("Unsupported format. Please select a PDF, Word document, or Image (PNG, JPG, JPEG, WEBP).");
         setFile(null);
         return;
       }
@@ -42,7 +43,7 @@ export default function UploadPage() {
     e.preventDefault();
     console.log("handleUploadSubmit called. File:", file?.name, "Token exists:", !!token);
     if (!file) {
-      setErrorMsg("No file selected. Please select a PDF or DOCX file to proceed.");
+      setErrorMsg("No file selected. Please select a document or image file to proceed.");
       return;
     }
     if (!token) {
@@ -144,7 +145,7 @@ export default function UploadPage() {
               <UploadCloud className="h-6 w-6 text-indigo-400" /> Upload Medical Record
             </h1>
             <p className="text-slate-450 text-xs mt-1.5 max-w-md mx-auto">
-              Provide a PDF or DOCX clinical summary. The AI will securely parse parameters, analyze risk tags, and initialize semantic vectors.
+              Provide a PDF, Word, or Image clinical report. The AI will securely parse parameters, analyze risk tags, and initialize semantic vectors.
             </p>
           </div>
 
@@ -160,7 +161,7 @@ export default function UploadPage() {
               <div className="border-2 border-dashed border-slate-800/80 hover:border-indigo-500/40 rounded-2xl p-12 text-center transition-all bg-slate-950/30 relative group cursor-pointer">
                 <input
                   type="file"
-                  accept=".pdf,.docx,.doc"
+                  accept=".pdf,.docx,.doc,.png,.jpg,.jpeg,.webp"
                   onChange={handleFileChange}
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                 />
@@ -180,7 +181,7 @@ export default function UploadPage() {
                   ) : (
                     <div>
                       <p className="text-slate-200 font-bold text-sm">Drag and drop file here, or click to browse</p>
-                      <p className="text-slate-500 text-xs mt-1.5">PDF or Word clinical documents (Max size 10MB)</p>
+                      <p className="text-slate-500 text-xs mt-1.5">PDF, Word, or Image clinical documents (Max size 10MB)</p>
                     </div>
                   )}
                 </div>
