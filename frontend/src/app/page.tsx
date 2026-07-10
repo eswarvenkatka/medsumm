@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
-import { Activity, Brain, FileText, Cpu, ArrowRight, Shield, Database, CheckCircle2 } from "lucide-react";
+import { Activity, Brain, FileText, Cpu, ArrowRight, Shield, Database, CheckCircle2, Sparkles } from "lucide-react";
 
 export default function Home() {
   const { user } = useAuth();
@@ -58,8 +58,14 @@ export default function Home() {
         <section className="relative py-20 md:py-32 flex flex-col items-center">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
             {/* Top pill badge */}
-            <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-300 border border-indigo-500/25 mb-8 animate-fade-in backdrop-blur-md">
-              <Brain className="h-3.5 w-3.5 text-indigo-400 animate-pulse" /> clinical AI summaries • RAG Querying
+            <span className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full text-sm md:text-base font-semibold bg-slate-900/80 text-slate-300 border border-slate-800/80 hover:border-indigo-500/50 hover:shadow-[0_0_25px_rgba(99,102,241,0.2)] mb-8 transition-all duration-300 group cursor-default backdrop-blur-md">
+              <Sparkles className="h-5 w-5 text-indigo-400 group-hover:rotate-12 transition-transform duration-300 animate-pulse" />
+              <span>
+                developed by{" "}
+                <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent font-extrabold">
+                  Sri deekshitha and Eswar venkat
+                </span>
+              </span>
             </span>
             
             <h1 className="text-4xl md:text-7xl font-extrabold tracking-tight mb-8 leading-[1.1] max-w-4xl">
