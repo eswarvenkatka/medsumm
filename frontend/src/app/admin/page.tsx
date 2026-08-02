@@ -761,8 +761,8 @@ export default function AdminPage() {
                           const isMed = riskStr.includes("MEDIUM");
                           
                           return (
-                            <tr key={doc.id} className="hover:bg-slate-905/10 transition-colors">
-                              <td className="py-3.5 px-4 font-bold text-slate-800">{doc.filename}</td>
+                            <tr key={doc.id} className="hover:bg-slate-100/50 transition-colors">
+                              <td className="py-3.5 px-4 font-bold text-slate-700">{doc.filename}</td>
                               <td className="py-3.5 px-4 text-slate-400">
                                 {new Date(doc.uploaded_at).toLocaleDateString()}
                               </td>
@@ -1238,23 +1238,26 @@ export default function AdminPage() {
 
                         return (
                           <tr key={app.id} className="hover:bg-slate-900/10 transition-colors">
-                            <td className="py-4.5 px-6 font-bold text-slate-800">
+                            <td className="py-4.5 px-6 font-bold text-slate-700">
                               <div>
-                                <p>{app.name}</p>
-                                <p className="text-xs text-slate-500 font-normal font-mono">{app.email}</p>
-                                <p className="text-xs text-slate-550 font-normal">{app.phone}</p>
+                                <p>{app.patient_name || app.name || "Patient"}</p>
+                                <p className="text-xs text-slate-500 font-normal font-mono">{app.patient_email || app.email || "No Email"}</p>
+                                <p className="text-xs text-slate-550 font-normal">{app.phone || "No Phone"}</p>
                               </div>
                             </td>
                             <td className="py-4.5 px-6 font-medium text-slate-700">
                               <div>
-                                <p className="text-indigo-500 font-semibold">{app.department?.toUpperCase()}</p>
-                                <p className="text-xs text-slate-500 mt-0.5">{app.doctor}</p>
+                                <p className="text-indigo-500 font-semibold">{(app.specialization || app.department || "General")?.toUpperCase()}</p>
+                                <p className="text-xs text-slate-500 mt-0.5">{app.doctor_name || app.doctor || "Unassigned"}</p>
                               </div>
                             </td>
-                            <td className="py-4.5 px-6 text-slate-800 font-semibold">
+                            <td className="py-4.5 px-6 text-slate-700 font-semibold">
                               <div>
-                                <p>{new Date(app.date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</p>
-                                <p className="text-xs text-slate-500 font-mono mt-0.5">{app.time}</p>
+                                <p>{(() => {
+                                  const dateObj = new Date(app.booking_date || app.date);
+                                  return isNaN(dateObj.getTime()) ? (app.booking_date || app.date || "N/A") : dateObj.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+                                })()}</p>
+                                <p className="text-xs text-slate-500 font-mono mt-0.5">{app.booking_time || app.time || "N/A"}</p>
                               </div>
                             </td>
                             <td className="py-4.5 px-6">
