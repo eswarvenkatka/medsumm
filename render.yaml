@@ -2,8 +2,10 @@ services:
   # Backend Web Service
   - type: web
     name: medsumm-backend
-    env: docker
+    runtime: docker
     rootDir: backend
+    dockerfilePath: backend/Dockerfile
+    dockerContext: backend
     plan: free
     envVars:
       - key: GEMINI_API_KEY
