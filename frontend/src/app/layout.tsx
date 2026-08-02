@@ -6,8 +6,8 @@ import { AuthProvider } from "@/context/AuthContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MedSumm AI - Premium Medical Summarization & RAG Chat",
-  description: "AI-powered clinical summarization, RAG queries, and medical document management platform.",
+  title: "Sri Hospital - Care • Compassion • Healing",
+  description: "Welcome to Sri Hospital. We provide premium clinical services, advanced emergency care, and cutting-edge digital health portals.",
 };
 
 export default function RootLayout({

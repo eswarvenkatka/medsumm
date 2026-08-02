@@ -9,7 +9,7 @@ import {
   ShieldAlert, Users, FileText, Database, 
   Loader2, AlertTriangle, Eye, Trash2, 
   Search, Filter, CheckCircle2, UserCheck, 
-  X, Check, AlertCircle, RefreshCw, Activity, Edit2
+  X, Check, AlertCircle, RefreshCw, Activity, Edit2, Calendar
 } from "lucide-react";
 
 interface AdminStats {
@@ -54,20 +54,22 @@ export default function AdminPage() {
   const { user, token, role, loading: authLoading } = useAuth();
   const router = useRouter();
 
-  // Tabs: overview, users, data, doctors
-  const [activeTab, setActiveTab] = useState<"overview" | "users" | "data" | "doctors">("overview");
+  // Tabs: overview, users, data, doctors, appointments
+  const [activeTab, setActiveTab] = useState<"overview" | "users" | "data" | "doctors" | "appointments">("overview");
 
   // Data states
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [users, setUsers] = useState<UserAccount[]>([]);
   const [documents, setDocuments] = useState<DocSummary[]>([]);
   const [doctors, setDoctors] = useState<any[]>([]);
+  const [appointments, setAppointments] = useState<any[]>([]);
   
   // Loading and error states
   const [loadingStats, setLoadingStats] = useState(true);
   const [loadingUsers, setLoadingUsers] = useState(false);
   const [loadingDocs, setLoadingDocs] = useState(false);
   const [loadingDoctors, setLoadingDoctors] = useState(false);
+  const [loadingAppointments, setLoadingAppointments] = useState(false);
   const [authorized, setAuthorized] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [notification, setNotification] = useState<{ type: "success" | "error"; message: string } | null>(null);
@@ -235,9 +237,82 @@ export default function AdminPage() {
         fetchDocuments();
       } else if (activeTab === "doctors") {
         fetchDoctors();
+      } else if (activeTab === "appointments") {
+        fetchAppointments();
       }
     }
   }, [token, authorized, activeTab]);
+
+  // Fetching Appointments
+  const fetchAppointments = async () => {
+    if (!token || !authorized) return;
+    setLoadingAppointments(true);
+    try {
+      const response = await fetch(`${getApiUrl()}/api/admin/appointments`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setAppointments(data);
+      } else {
+        showNotification("error", "Failed to fetch appointments list.");
+      }
+    } catch (err) {
+      console.error("Failed to load appointments:", err);
+      showNotification("error", "Network error while loading appointments.");
+    } finally {
+      setLoadingAppointments(false);
+    }
+  };
+
+  const handleUpdateAppointmentStatus = async (appId: string, status: string) => {
+    if (!token) return;
+    setActionLoading(`update-appointment-${appId}`);
+    try {
+      const response = await fetch(`${getApiUrl()}/api/admin/appointments/${appId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ status })
+      });
+      if (response.ok) {
+        showNotification("success", `Appointment status updated to ${status}.`);
+        fetchAppointments();
+      } else {
+        showNotification("error", "Failed to update appointment status.");
+      }
+    } catch (err) {
+      showNotification("error", "Error communicating with server.");
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleDeleteAppointment = async (appId: string) => {
+    if (!token) return;
+    if (!window.confirm("Are you sure you want to delete this appointment?")) return;
+    setActionLoading(`delete-appointment-${appId}`);
+    try {
+      const response = await fetch(`${getApiUrl()}/api/admin/appointments/${appId}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        showNotification("success", "Appointment deleted successfully.");
+        fetchAppointments();
+      } else {
+        showNotification("error", "Failed to delete appointment.");
+      }
+    } catch (err) {
+      showNotification("error", "Error communicating with server.");
+    } finally {
+      setActionLoading(null);
+    }
+  };
 
   const showNotification = (type: "success" | "error", message: string) => {
     setNotification({ type, message });
@@ -498,7 +573,7 @@ export default function AdminPage() {
         {/* Header */}
         <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-extrabold tracking-tight text-white flex items-center gap-2">
+            <h1 className="text-3xl font-extrabold tracking-tight text-indigo-500 flex items-center gap-2">
               <ShieldAlert className="h-8 w-8 text-indigo-500" />
               Administrative Workspace
             </h1>
@@ -513,8 +588,9 @@ export default function AdminPage() {
                 else if (activeTab === "users") fetchUsers();
                 else if (activeTab === "data") fetchDocuments();
                 else if (activeTab === "doctors") fetchDoctors();
+                else if (activeTab === "appointments") fetchAppointments();
               }}
-              className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 cursor-pointer flex items-center gap-1.5 text-xs font-semibold"
+              className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-[#0A4E7A] hover:text-[#009F93] cursor-pointer flex items-center gap-1.5 text-xs font-bold shadow-sm transition-all"
             >
               <RefreshCw className="h-3.5 w-3.5" />
               Refresh
@@ -568,6 +644,17 @@ export default function AdminPage() {
             <UserCheck className="h-4 w-4" />
             Doctors Registry
           </button>
+          <button
+            onClick={() => setActiveTab("appointments")}
+            className={`px-5 py-3 border-b-2 font-bold text-sm flex items-center gap-2 transition-all cursor-pointer ${
+              activeTab === "appointments"
+                ? "border-indigo-500 text-indigo-400 bg-indigo-500/5"
+                : "border-transparent text-slate-450 hover:text-slate-200 hover:bg-slate-900/30"
+            }`}
+          >
+            <Calendar className="h-4 w-4" />
+            Appointments
+          </button>
         </div>
 
         {/* TAB CONTENT: OVERVIEW */}
@@ -575,46 +662,46 @@ export default function AdminPage() {
           <div className="space-y-8 animate-fade-in">
             {/* Overview Stats Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="p-5 rounded-xl bg-slate-900/40 border border-slate-800/80 backdrop-blur-sm flex items-center justify-between">
+              <div className="p-5 rounded-2xl bg-white border border-slate-200 flex items-center justify-between shadow-sm">
                 <div>
-                  <p className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Total Users</p>
-                  <h3 className="text-3xl font-bold mt-2 text-white">{stats.total_users}</h3>
+                  <p className="text-slate-450 text-xs font-semibold uppercase tracking-wider">Total Users</p>
+                  <h3 className="text-3xl font-extrabold mt-2 text-[#0A4E7A]">{stats.total_users}</h3>
                 </div>
-                <Users className="h-10 w-10 text-indigo-500/20" />
+                <Users className="h-10 w-10 text-indigo-500/25" />
               </div>
 
-              <div className="p-5 rounded-xl bg-slate-900/40 border border-slate-800/80 backdrop-blur-sm flex items-center justify-between">
+              <div className="p-5 rounded-2xl bg-white border border-slate-200 flex items-center justify-between shadow-sm">
                 <div>
-                  <p className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Total Reports</p>
-                  <h3 className="text-3xl font-bold mt-2 text-white">{stats.total_documents}</h3>
+                  <p className="text-slate-450 text-xs font-semibold uppercase tracking-wider">Total Reports</p>
+                  <h3 className="text-3xl font-extrabold mt-2 text-[#0A4E7A]">{stats.total_documents}</h3>
                 </div>
-                <FileText className="h-10 w-10 text-cyan-500/20" />
+                <FileText className="h-10 w-10 text-cyan-500/25" />
               </div>
 
-              <div className="p-5 rounded-xl bg-slate-900/40 border border-slate-800/80 backdrop-blur-sm flex items-center justify-between">
+              <div className="p-5 rounded-2xl bg-white border border-slate-200 flex items-center justify-between shadow-sm">
                 <div>
-                  <p className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Indexed Chunks</p>
-                  <h3 className="text-3xl font-bold mt-2 text-white">{stats.total_chunks_indexed}</h3>
+                  <p className="text-slate-450 text-xs font-semibold uppercase tracking-wider">Indexed Chunks</p>
+                  <h3 className="text-3xl font-extrabold mt-2 text-[#0A4E7A]">{stats.total_chunks_indexed}</h3>
                 </div>
-                <Database className="h-10 w-10 text-emerald-500/20" />
+                <Database className="h-10 w-10 text-emerald-500/25" />
               </div>
 
-              <div className="p-5 rounded-xl bg-slate-900/40 border border-slate-800/80 backdrop-blur-sm flex items-center justify-between">
+              <div className="p-5 rounded-2xl bg-white border border-slate-200 flex items-center justify-between shadow-sm">
                 <div>
-                  <p className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Risk Level Ratio</p>
-                  <h3 className="text-3xl font-bold mt-2 text-red-500">
-                    {highPercent}% <span className="text-slate-400 text-sm font-normal">High</span>
+                  <p className="text-slate-450 text-xs font-semibold uppercase tracking-wider">Risk Level Ratio</p>
+                  <h3 className="text-3xl font-extrabold mt-2 text-red-500">
+                    {highPercent}% <span className="text-[#475569] text-sm font-normal">High</span>
                   </h3>
                 </div>
-                <AlertTriangle className="h-10 w-10 text-red-500/20" />
+                <AlertTriangle className="h-10 w-10 text-red-500/25" />
               </div>
             </div>
 
             {/* Overview Charts and Tables */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Risk Distribution Chart */}
-              <div className="lg:col-span-1 p-6 rounded-xl border border-slate-800/80 bg-slate-900/20 backdrop-blur-sm">
-                <h3 className="text-base font-bold text-white mb-6">Clinical Risk Level Ratio</h3>
+              <div className="lg:col-span-1 p-6 rounded-2xl border border-slate-200 bg-white shadow-sm">
+                <h3 className="text-base font-bold text-[#0A4E7A] mb-6">Clinical Risk Level Ratio</h3>
                 <div className="space-y-6">
                   <div className="space-y-2">
                     <div className="flex justify-between text-xs font-semibold">
@@ -649,8 +736,8 @@ export default function AdminPage() {
               </div>
 
               {/* Recent Uploads List */}
-              <div className="lg:col-span-2 p-6 rounded-xl border border-slate-800/80 bg-slate-900/20 backdrop-blur-sm">
-                <h3 className="text-base font-bold text-white mb-4">Recent Global Uploads</h3>
+              <div className="lg:col-span-2 p-6 rounded-2xl border border-slate-200 bg-white shadow-sm">
+                <h3 className="text-base font-bold text-[#0A4E7A] mb-4">Recent Global Uploads</h3>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs border-collapse">
                     <thead>
@@ -674,8 +761,8 @@ export default function AdminPage() {
                           const isMed = riskStr.includes("MEDIUM");
                           
                           return (
-                            <tr key={doc.id} className="hover:bg-slate-900/20 transition-colors">
-                              <td className="py-3.5 px-4 font-bold text-slate-200">{doc.filename}</td>
+                            <tr key={doc.id} className="hover:bg-slate-905/10 transition-colors">
+                              <td className="py-3.5 px-4 font-bold text-slate-800">{doc.filename}</td>
                               <td className="py-3.5 px-4 text-slate-400">
                                 {new Date(doc.uploaded_at).toLocaleDateString()}
                               </td>
@@ -715,9 +802,9 @@ export default function AdminPage() {
         {activeTab === "users" && (
           <div className="space-y-6 animate-fade-in">
             {/* Filter Toolbar */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-slate-900/20 border border-slate-800/80 rounded-2xl p-4 backdrop-blur-sm">
+            <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
               <div className="relative w-full sm:max-w-md">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-500">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
                   <Search className="h-4 w-4" />
                 </div>
                 <input
@@ -725,29 +812,29 @@ export default function AdminPage() {
                   placeholder="Search users by name or email..."
                   value={userSearch}
                   onChange={(e) => setUserSearch(e.target.value)}
-                  className="block w-full pl-11 pr-4 py-2.5 border border-slate-800 bg-slate-955 rounded-xl text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-slate-100 transition-all"
+                  className="block w-full pl-11 pr-4 py-2.5 border border-slate-200 bg-[#F8F9FA] rounded-xl text-sm placeholder-slate-450 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-slate-850 transition-all"
                 />
               </div>
 
-              <div className="flex items-center gap-2 bg-slate-955 border border-slate-800 rounded-xl px-3.5 py-2">
-                <Filter className="h-4 w-4 text-indigo-400" />
+              <div className="flex items-center gap-2 bg-[#F8F9FA] border border-slate-200 rounded-xl px-3.5 py-2">
+                <Filter className="h-4 w-4 text-indigo-500" />
                 <select
                   value={userRoleFilter}
                   onChange={(e) => setUserRoleFilter(e.target.value)}
-                  className="bg-transparent border-none text-xs font-semibold text-slate-300 focus:outline-none cursor-pointer"
+                  className="bg-transparent border-none text-xs font-bold text-slate-700 focus:outline-none cursor-pointer"
                 >
-                  <option value="ALL" className="bg-slate-950 text-slate-200">All Roles</option>
-                  <option value="admin" className="bg-slate-950 text-slate-200">Administrator</option>
-                  <option value="user" className="bg-slate-950 text-slate-200">Physician / User</option>
+                  <option value="ALL" className="text-slate-700 bg-white">All Roles</option>
+                  <option value="admin" className="text-slate-700 bg-white">Administrator</option>
+                  <option value="user" className="text-slate-700 bg-white">Physician / User</option>
                 </select>
               </div>
             </div>
 
             {/* Users Table */}
-            <div className="rounded-2xl border border-slate-800/80 bg-slate-900/10 backdrop-blur-md overflow-hidden shadow-2xl">
-              <div className="p-6 border-b border-slate-800/80 flex items-center justify-between">
-                <h2 className="text-base font-bold text-slate-100 flex items-center gap-2">
-                  <Users className="h-4 w-4 text-[#3B7E96]" /> User Registry
+            <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+              <div className="p-6 border-b border-slate-200 flex items-center justify-between">
+                <h2 className="text-base font-bold text-[#0A4E7A] flex items-center gap-2">
+                  <Users className="h-4 w-4 text-[#009F93]" /> User Registry
                 </h2>
                 <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider">
                   {loadingUsers ? "Loading..." : `${filteredUsers.length} total users`}
@@ -840,9 +927,9 @@ export default function AdminPage() {
         {activeTab === "data" && (
           <div className="space-y-6 animate-fade-in">
             {/* Filter Toolbar */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-slate-900/20 border border-slate-800/80 rounded-2xl p-4 backdrop-blur-sm">
+            <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
               <div className="relative w-full sm:max-w-md">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-500">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
                   <Search className="h-4 w-4" />
                 </div>
                 <input
@@ -850,30 +937,30 @@ export default function AdminPage() {
                   placeholder="Search summaries by filename or patient..."
                   value={docSearch}
                   onChange={(e) => setDocSearch(e.target.value)}
-                  className="block w-full pl-11 pr-4 py-2.5 border border-slate-800 bg-slate-955 rounded-xl text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-slate-100 transition-all"
+                  className="block w-full pl-11 pr-4 py-2.5 border border-slate-200 bg-[#F8F9FA] rounded-xl text-sm placeholder-slate-450 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-slate-850 transition-all"
                 />
               </div>
 
-              <div className="flex items-center gap-2 bg-slate-955 border border-slate-800 rounded-xl px-3.5 py-2">
-                <Filter className="h-4 w-4 text-indigo-400" />
+              <div className="flex items-center gap-2 bg-[#F8F9FA] border border-slate-200 rounded-xl px-3.5 py-2">
+                <Filter className="h-4 w-4 text-indigo-500" />
                 <select
                   value={docRiskFilter}
                   onChange={(e) => setDocRiskFilter(e.target.value)}
-                  className="bg-transparent border-none text-xs font-semibold text-slate-300 focus:outline-none cursor-pointer"
+                  className="bg-transparent border-none text-xs font-bold text-slate-700 focus:outline-none cursor-pointer"
                 >
-                  <option value="ALL" className="bg-slate-950 text-slate-200">All Risks</option>
-                  <option value="HIGH" className="bg-slate-950 text-slate-200">Critical / High</option>
-                  <option value="MEDIUM" className="bg-slate-950 text-slate-200">Moderate / Medium</option>
-                  <option value="LOW" className="bg-slate-950 text-slate-200">Stable / Low</option>
+                  <option value="ALL" className="text-slate-700 bg-white">All Risks</option>
+                  <option value="HIGH" className="text-slate-700 bg-white">Critical / High</option>
+                  <option value="MEDIUM" className="text-slate-700 bg-white">Moderate / Medium</option>
+                  <option value="LOW" className="text-slate-700 bg-white">Stable / Low</option>
                 </select>
               </div>
             </div>
 
             {/* Reports Table */}
-            <div className="rounded-2xl border border-slate-800/80 bg-slate-900/10 backdrop-blur-md overflow-hidden shadow-2xl">
-              <div className="p-6 border-b border-slate-800/80 flex items-center justify-between">
-                <h2 className="text-base font-bold text-slate-100 flex items-center gap-2">
-                  <FileText className="h-4 w-4 text-[#3B7E96]" /> Global Patient Summaries Register
+            <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+              <div className="p-6 border-b border-slate-200 flex items-center justify-between">
+                <h2 className="text-base font-bold text-[#0A4E7A] flex items-center gap-2">
+                  <FileText className="h-4 w-4 text-[#009F93]" /> Global Patient Summaries Register
                 </h2>
                 <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider">
                   {loadingDocs ? "Loading..." : `${filteredDocs.length} total uploads`}
@@ -920,7 +1007,7 @@ export default function AdminPage() {
                             <td className="py-4.5 px-6 text-slate-400 font-medium">
                               {new Date(doc.uploaded_at).toLocaleDateString()}
                             </td>
-                            <td className="py-4.5 px-6 text-slate-300 truncate max-w-[150px] font-medium">
+                            <td className="py-4.5 px-6 text-slate-700 truncate max-w-[150px] font-medium">
                               {doc.summary?.patient_info || "Unspecified"}
                             </td>
                             <td className="py-4.5 px-6">
@@ -1002,9 +1089,9 @@ export default function AdminPage() {
             </div>
 
             {/* Doctors Table */}
-            <div className="rounded-2xl border border-slate-800/80 bg-slate-900/10 backdrop-blur-md overflow-hidden shadow-2xl">
-              <div className="p-6 border-b border-slate-800/80 flex items-center justify-between">
-                <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+            <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+              <div className="p-6 border-b border-slate-200 flex items-center justify-between">
+                <h3 className="text-sm font-bold text-[#0A4E7A] flex items-center gap-2">
                   Registered Doctors
                 </h3>
                 <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider">
@@ -1091,6 +1178,135 @@ export default function AdminPage() {
                           </td>
                         </tr>
                       ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* TAB CONTENT: APPOINTMENTS */}
+        {activeTab === "appointments" && (
+          <div className="space-y-6 animate-fade-in text-slate-100">
+            <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+              <h2 className="text-base font-bold text-[#0A4E7A] flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-[#009F93]" /> Booked Appointments
+              </h2>
+              <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider">
+                {loadingAppointments ? "Loading..." : `${appointments.length} total appointments`}
+              </span>
+            </div>
+
+            <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+              <div className="p-6 border-b border-slate-200 flex items-center justify-between">
+                <h3 className="text-sm font-bold text-[#0A4E7A] flex items-center gap-2">
+                  Patient Reservations
+                </h3>
+              </div>
+
+              {loadingAppointments && appointments.length === 0 ? (
+                <div className="py-24 text-center">
+                  <Loader2 className="h-10 w-10 text-indigo-500 animate-spin mx-auto mb-4" />
+                  <p className="text-slate-400 font-bold text-sm">Querying appointments database...</p>
+                </div>
+              ) : appointments.length === 0 ? (
+                <div className="py-24 text-center">
+                  <Calendar className="h-14 w-14 text-slate-800 mx-auto mb-4" />
+                  <p className="text-slate-400 font-bold text-sm">No patient appointments found</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="border-b border-slate-800/80 text-slate-550 text-xs font-bold uppercase tracking-wider">
+                        <th className="py-4 px-6">Patient</th>
+                        <th className="py-4 px-6">Department & Doctor</th>
+                        <th className="py-4 px-6">Scheduled Time</th>
+                        <th className="py-4 px-6">Status</th>
+                        <th className="py-4 px-6">Symptoms/Notes</th>
+                        <th className="py-4 px-6 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-900/60 text-sm">
+                      {appointments.map((app) => {
+                        const isPending = app.status === "pending";
+                        const isConfirmed = app.status === "confirmed";
+                        const isCompleted = app.status === "completed";
+                        const isLoading = actionLoading === `update-appointment-${app.id}`;
+                        const isDeleting = actionLoading === `delete-appointment-${app.id}`;
+
+                        return (
+                          <tr key={app.id} className="hover:bg-slate-900/10 transition-colors">
+                            <td className="py-4.5 px-6 font-bold text-slate-800">
+                              <div>
+                                <p>{app.name}</p>
+                                <p className="text-xs text-slate-500 font-normal font-mono">{app.email}</p>
+                                <p className="text-xs text-slate-550 font-normal">{app.phone}</p>
+                              </div>
+                            </td>
+                            <td className="py-4.5 px-6 font-medium text-slate-700">
+                              <div>
+                                <p className="text-indigo-500 font-semibold">{app.department?.toUpperCase()}</p>
+                                <p className="text-xs text-slate-500 mt-0.5">{app.doctor}</p>
+                              </div>
+                            </td>
+                            <td className="py-4.5 px-6 text-slate-800 font-semibold">
+                              <div>
+                                <p>{new Date(app.date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                                <p className="text-xs text-slate-500 font-mono mt-0.5">{app.time}</p>
+                              </div>
+                            </td>
+                            <td className="py-4.5 px-6">
+                              <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full font-bold border text-[10px] uppercase ${
+                                isConfirmed
+                                  ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                                  : isCompleted
+                                  ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20"
+                                  : "bg-yellow-500/10 text-yellow-450 border-yellow-500/20"
+                              }`}>
+                                {app.status}
+                              </span>
+                            </td>
+                            <td className="py-4.5 px-6 text-slate-400 text-xs max-w-[180px] truncate" title={app.notes}>
+                              {app.notes || "None"}
+                            </td>
+                            <td className="py-4.5 px-6 text-right">
+                              <div className="flex items-center justify-end gap-2">
+                                {isPending && (
+                                  <button
+                                    disabled={isLoading}
+                                    onClick={() => handleUpdateAppointmentStatus(app.id, "confirmed")}
+                                    className="px-2.5 py-1.5 rounded bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-1 shadow-sm disabled:opacity-50"
+                                  >
+                                    Confirm
+                                  </button>
+                                )}
+                                {isConfirmed && (
+                                  <button
+                                    disabled={isLoading}
+                                    onClick={() => handleUpdateAppointmentStatus(app.id, "completed")}
+                                    className="px-2.5 py-1.5 rounded bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-1 shadow-sm disabled:opacity-50"
+                                  >
+                                    Complete
+                                  </button>
+                                )}
+                                <button
+                                  disabled={isDeleting || isLoading}
+                                  onClick={() => handleDeleteAppointment(app.id)}
+                                  className="p-2 rounded-lg border border-slate-800 hover:border-red-500/30 bg-slate-955 text-slate-500 hover:text-red-400 transition-all cursor-pointer disabled:opacity-50"
+                                >
+                                  {isDeleting ? (
+                                    <Loader2 className="h-3.5 w-3.5 text-red-450 animate-spin" />
+                                  ) : (
+                                    <Trash2 className="h-3.5 w-3.5" />
+                                  )}
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>

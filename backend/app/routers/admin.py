@@ -228,3 +228,103 @@ def delete_document_admin(doc_id: str, admin_user: dict = Depends(get_admin_user
             detail=f"Failed to delete document: {str(e)}"
         )
 
+# --- APPOINTMENTS APIS ---
+import uuid
+
+@router.post("/appointment/book")
+def book_appointment_public(payload: Dict[str, Any]):
+    """
+    Public endpoint enabling patients to book an appointment.
+    Saves to the configured Firestore/local database.
+    """
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database offline.")
+    try:
+        app_id = str(uuid.uuid4())
+        appointment_data = {
+            "id": app_id,
+            "name": payload.get("name"),
+            "email": payload.get("email"),
+            "phone": payload.get("phone"),
+            "department": payload.get("department"),
+            "doctor": payload.get("doctor"),
+            "date": payload.get("date"),
+            "time": payload.get("time"),
+            "notes": payload.get("notes", ""),
+            "status": "pending",
+            "created_at": datetime.utcnow().isoformat()
+        }
+        db.collection("appointments").document(app_id).set(appointment_data)
+        return {"status": "success", "appointment": appointment_data}
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to book appointment: {str(e)}"
+        )
+
+@router.get("/appointments")
+def list_appointments(admin_user: dict = Depends(get_admin_user)):
+    """
+    Admin-only endpoint to list all scheduled appointments.
+    """
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database offline.")
+    try:
+        appointments = db.collection("appointments").get()
+        result = [doc.to_dict() for doc in appointments]
+        # Sort by created_at descending
+        result.sort(key=lambda x: x.get("created_at", ""), reverse=True)
+        return result
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to fetch appointments: {str(e)}"
+        )
+
+@router.put("/appointments/{appointment_id}")
+def update_appointment(appointment_id: str, payload: Dict[str, Any], admin_user: dict = Depends(get_admin_user)):
+    """
+    Admin-only endpoint to update appointment status (e.g. confirm, complete, cancel).
+    """
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database offline.")
+    try:
+        app_ref = db.collection("appointments").document(appointment_id)
+        if not app_ref.get().exists:
+            raise HTTPException(status_code=404, detail="Appointment not found")
+        
+        update_data = {}
+        if "status" in payload:
+            update_data["status"] = payload["status"]
+        if "notes" in payload:
+            update_data["notes"] = payload["notes"]
+            
+        if update_data:
+            app_ref.update(update_data)
+            
+        return {"status": "success", "appointment": app_ref.get().to_dict()}
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to update appointment: {str(e)}"
+        )
+
+@router.delete("/appointments/{appointment_id}")
+def delete_appointment(appointment_id: str, admin_user: dict = Depends(get_admin_user)):
+    """
+    Admin-only endpoint to delete a archived/cancelled appointment.
+    """
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database offline.")
+    try:
+        app_ref = db.collection("appointments").document(appointment_id)
+        if not app_ref.get().exists:
+            raise HTTPException(status_code=404, detail="Appointment not found")
+        app_ref.delete()
+        return {"status": "success", "message": "Appointment deleted successfully."}
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to delete appointment: {str(e)}"
+        )
+

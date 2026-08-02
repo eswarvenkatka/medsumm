@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import { Activity, LogOut, UploadCloud, LayoutDashboard, Settings } from "lucide-react";
+import { LogOut, UploadCloud, LayoutDashboard, Settings } from "lucide-react";
+import SriHospitalLogo from "@/components/ui/SriHospitalLogo";
 
 export default function Navbar() {
   const { user, role, logout } = useAuth();
@@ -24,16 +25,11 @@ export default function Navbar() {
 
   return (
     <div className="sticky top-0 z-50 w-full px-4 pt-4 sm:px-6 lg:px-8">
-      <header className="max-w-7xl mx-auto rounded-2xl border border-[rgba(78,157,184,0.15)] bg-white/90 backdrop-blur-md shadow-sm">
+      <header className="max-w-7xl mx-auto rounded-2xl border border-[rgba(10,78,122,0.15)] bg-white/95 backdrop-blur-md shadow-sm">
         <div className="px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-8">
-            <Link href="/dashboard" className="flex items-center gap-2 group transition-all">
-              <div className="h-9 w-9 rounded-xl bg-[#3B7E96]/10 flex items-center justify-center border border-[#3B7E96]/20 group-hover:scale-105 transition-transform duration-300">
-                <Activity className="h-5 w-5 text-[#3B7E96] animate-pulse" />
-              </div>
-              <span className="text-lg font-bold tracking-tight text-[#1e293b] group-hover:text-[#3B7E96] transition-colors">
-                MedSumm <span className="text-[#3B7E96]">AI</span>
-              </span>
+            <Link href="/" className="flex items-center group transition-all">
+              <SriHospitalLogo size={36} showTagline={false} />
             </Link>
             
             <nav className="hidden md:flex items-center gap-1.5">
@@ -46,14 +42,14 @@ export default function Navbar() {
                     href={link.href}
                     className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all relative ${
                       isActive
-                        ? "text-[#3B7E96] bg-[#3B7E96]/8 shadow-sm"
-                        : "text-[#475569] hover:text-[#1e293b] hover:bg-slate-100"
+                        ? "text-indigo-500 bg-indigo-500/10 shadow-sm font-bold"
+                        : "text-slate-500 hover:text-indigo-500 hover:bg-slate-150"
                     }`}
                   >
                     <Icon className="h-4 w-4" />
                     {link.label}
                     {isActive && (
-                      <span className="absolute bottom-0 left-4 right-4 h-0.5 bg-[#3B7E96] rounded-full" />
+                      <span className="absolute bottom-0 left-4 right-4 h-0.5 bg-indigo-500 rounded-full" />
                     )}
                   </Link>
                 );
@@ -64,14 +60,14 @@ export default function Navbar() {
                   href="/admin"
                   className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all relative ${
                     pathname === "/admin"
-                      ? "text-[#3B7E96] bg-[#3B7E96]/8 shadow-sm"
-                      : "text-[#475569] hover:text-[#1e293b] hover:bg-slate-100"
+                      ? "text-indigo-500 bg-indigo-500/10 shadow-sm font-bold"
+                      : "text-slate-500 hover:text-indigo-500 hover:bg-slate-150"
                   }`}
                 >
                   <Settings className="h-4 w-4" />
                   Admin Panel
                   {pathname === "/admin" && (
-                    <span className="absolute bottom-0 left-4 right-4 h-0.5 bg-[#3B7E96] rounded-full" />
+                    <span className="absolute bottom-0 left-4 right-4 h-0.5 bg-indigo-500 rounded-full" />
                   )}
                 </Link>
               )}
