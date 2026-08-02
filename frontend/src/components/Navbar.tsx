@@ -20,7 +20,7 @@ export default function Navbar() {
     { href: "/dashboard/upload", label: "Upload Document", icon: UploadCloud },
   ];
 
-  const isAdmin = role === "admin" || user?.email === "eswar@medsumm.ai";
+  const isAdmin = user?.email === "esw28351@gmail.com";
 
   return (
     <div className="sticky top-0 z-50 w-full px-4 pt-4 sm:px-6 lg:px-8">

@@ -147,3 +147,27 @@ def search_relevant_chunks(user_id: str, doc_id: str, query_vector: list[float],
     except Exception as e:
         print(f"Error searching Qdrant: {e}")
         return []
+
+def delete_document_chunks(doc_id: str):
+    """
+    Deletes all vectors (chunks) associated with a specific doc_id from Qdrant.
+    """
+    client = get_qdrant_client()
+    if client is None:
+        return
+    ensure_collection()
+    try:
+        client.delete(
+            collection_name=COLLECTION_NAME,
+            points_selector=qmodels.Filter(
+                must=[
+                    qmodels.FieldCondition(
+                        key="doc_id",
+                        match=qmodels.MatchValue(value=doc_id)
+                    )
+                ]
+            )
+        )
+    except Exception as e:
+        print(f"Error deleting chunks from Qdrant: {e}")
+

@@ -97,3 +97,56 @@ def answer_rag_query(query: str, context_chunks: list[str]) -> str:
         return invoke_llm_with_fallback(messages, temperature=0.2)
     except Exception as e:
         return f"Error generating answer: {str(e)}"
+
+
+def generate_patient_plan(summary: dict) -> dict:
+    """
+    Generates a patient-friendly action plan, roadmap, and recommendations
+    based on the document summary using Gemini.
+    """
+    system_prompt = (
+        "You are a compassionate clinical coordinator. Your job is to translate complex clinical findings "
+        "into a structured patient recovery/management plan. Based on the provided clinical summary, "
+        "identify the main health issue (main problem), explain why it happens, provide clear steps on how to manage/overcome it, "
+        "and draft a day-by-day (or phase-by-day, e.g. Day 1, Day 2, etc.) roadmap for the first week of management. "
+        "Also, recommend a medical specialty (e.g. Endocrinologist, Cardiologist, Neurologist, General Physician, Pediatrician, etc.) that would "
+        "be best suited to treat this problem.\n\n"
+        "Output the result in JSON format matching this schema:\n"
+        "{\n"
+        '  "main_problem": "A simple, clear patient-friendly description of the main medical issue",\n'
+        '  "why_it_occurs": "A clear, empathetic explanation of why this condition occurs",\n'
+        '  "how_to_overcome": "Key actions, lifestyle adjustments, and care management practices the patient should follow to improve",\n'
+        '  "roadmap": [\n'
+        '     {"day": "Day 1-2 (example)", "instructions": "What the patient should do"},\n'
+        '     {"day": "Day 3-4 (example)", "instructions": "What the patient should do"},\n'
+        '     {"day": "Day 5-7 (example)", "instructions": "What the patient should do"}\n'
+        '  ],\n'
+        '  "recommended_specialty": "The single most appropriate specialist name (e.g., Endocrinologist, Cardiologist, General Physician)"\n'
+        "}\n"
+        "Return ONLY the raw JSON string. Do not include markdown code block formatting (like ```json)."
+    )
+
+    try:
+        messages = [
+            SystemMessage(content=system_prompt),
+            HumanMessage(content=f"Clinical Summary Data:\n\n{json.dumps(summary, indent=2)}")
+        ]
+        content = invoke_llm_with_fallback(messages, temperature=0.2)
+        
+        # Clean up any potential markdown formatting if returned
+        if content.startswith("```json"):
+            content = content.replace("```json", "", 1)
+        if content.endswith("```"):
+            content = content[:-3]
+        content = content.strip()
+        
+        return json.loads(content)
+    except Exception as e:
+        print(f"Error generating patient plan: {e}")
+        return {
+            "main_problem": "Unable to load patient plan details.",
+            "why_it_occurs": "Data extraction error.",
+            "how_to_overcome": "Please consult your primary care doctor.",
+            "roadmap": [],
+            "recommended_specialty": "General Physician"
+        }

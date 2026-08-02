@@ -23,11 +23,7 @@ def get_admin_user(current_user: dict = Depends(get_current_user)) -> dict:
     """
     Dependency to verify the user has admin rights.
     """
-    is_admin = (
-        current_user.get("admin") is True or 
-        current_user.get("email", "").startswith("admin@") or 
-        current_user.get("email", "") == "eswar@medsumm.ai"
-    )
+    is_admin = current_user.get("email", "") == "esw28351@gmail.com"
     if not is_admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

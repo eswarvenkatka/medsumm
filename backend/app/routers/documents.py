@@ -9,10 +9,17 @@ from app.services.cloudinary_service import upload_document
 from app.services.document_parser import extract_text
 from app.utils.text_splitter import split_text
 from app.services.embedding_service import get_embeddings, get_embedding
-from app.services.gemini_service import generate_medical_summary, answer_rag_query
+from app.services.gemini_service import generate_medical_summary, answer_rag_query, generate_patient_plan
 from app.services.qdrant_service import insert_document_chunks, search_relevant_chunks
 
 router = APIRouter(prefix="/api/documents", tags=["documents"])
+
+class AppointmentBooking(BaseModel):
+    doctor_id: str
+    doctor_name: str
+    specialization: str
+    booking_date: str
+    booking_time: str
 
 class QueryRequest(BaseModel):
     query: str
@@ -108,6 +115,60 @@ def get_user_documents(current_user: dict = Depends(get_current_user)):
             detail=f"Database query failed: {str(e)}"
         )
 
+@router.get("/all-doctors")
+def list_doctors_all(current_user: dict = Depends(get_current_user)):
+    """
+    Returns a list of all registered doctors.
+    """
+    if db is None:
+        return []
+    try:
+        docs = db.collection("doctors").get()
+        return [doc.to_dict() for doc in docs]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch doctors: {str(e)}")
+
+
+@router.post("/appointments/book")
+def book_appointment(payload: AppointmentBooking, current_user: dict = Depends(get_current_user)):
+    """
+    Saves an appointment booking in the database.
+    """
+    user_id = current_user.get("uid")
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database offline.")
+    try:
+        booking_id = str(uuid.uuid4())
+        data = payload.dict()
+        data["id"] = booking_id
+        data["user_id"] = user_id
+        data["patient_email"] = current_user.get("email", "")
+        data["patient_name"] = current_user.get("name", "Patient")
+        data["status"] = "Confirmed"
+        data["created_at"] = datetime.utcnow().isoformat()
+        db.collection("appointments").document(booking_id).set(data)
+        return {"status": "success", "booking": data}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to save booking: {str(e)}")
+
+
+@router.get("/appointments/my-bookings")
+def my_bookings(current_user: dict = Depends(get_current_user)):
+    """
+    Lists all appointment bookings made by the logged-in user.
+    """
+    user_id = current_user.get("uid")
+    if db is None:
+        return []
+    try:
+        bookings = db.collection("appointments").where("user_id", "==", user_id).get()
+        result = [b.to_dict() for b in bookings]
+        result.sort(key=lambda x: x.get("created_at", ""), reverse=True)
+        return result
+    except Exception as e:
+        return []
+
+
 @router.get("/{id}")
 def get_document(id: str, current_user: dict = Depends(get_current_user)):
     """
@@ -122,10 +183,7 @@ def get_document(id: str, current_user: dict = Depends(get_current_user)):
         raise HTTPException(status_code=404, detail="Document not found.")
         
     doc_data = doc_ref.to_dict()
-    is_admin = (
-        current_user.get("admin") is True or 
-        current_user.get("email") == "eswar@medsumm.ai"
-    )
+    is_admin = current_user.get("email") == "esw28351@gmail.com"
     if doc_data.get("user_id") != user_id and not is_admin:
         raise HTTPException(status_code=403, detail="Unauthorized access to document.")
         
@@ -146,10 +204,7 @@ def query_document(id: str, payload: QueryRequest, current_user: dict = Depends(
         raise HTTPException(status_code=404, detail="Document not found.")
         
     doc_data = doc_ref.to_dict()
-    is_admin = (
-        current_user.get("admin") is True or 
-        current_user.get("email") == "eswar@medsumm.ai"
-    )
+    is_admin = current_user.get("email") == "esw28351@gmail.com"
     if doc_data.get("user_id") != user_id and not is_admin:
         raise HTTPException(status_code=403, detail="Unauthorized access to document.")
         
@@ -198,10 +253,7 @@ def get_chat_history(id: str, current_user: dict = Depends(get_current_user)):
         raise HTTPException(status_code=404, detail="Document not found.")
         
     doc_data = doc_ref.to_dict()
-    is_admin = (
-        current_user.get("admin") is True or 
-        current_user.get("email") == "eswar@medsumm.ai"
-    )
+    is_admin = current_user.get("email") == "esw28351@gmail.com"
     if doc_data.get("user_id") != user_id and not is_admin:
         raise HTTPException(status_code=403, detail="Unauthorized access.")
         
@@ -212,3 +264,43 @@ def get_chat_history(id: str, current_user: dict = Depends(get_current_user)):
         return result
     except Exception as e:
         return []
+
+
+@router.get("/{id}/patient-plan")
+def get_patient_plan(id: str, current_user: dict = Depends(get_current_user)):
+    """
+    Generates a personalized patient plan from the document summary using Gemini.
+    """
+    user_id = current_user.get("uid")
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database connection offline.")
+        
+    doc_ref = db.collection("documents").document(id).get()
+    if not doc_ref.exists:
+        raise HTTPException(status_code=404, detail="Document not found.")
+        
+    doc_data = doc_ref.to_dict()
+    is_admin = current_user.get("email") == "esw28351@gmail.com"
+    if doc_data.get("user_id") != user_id and not is_admin:
+        raise HTTPException(status_code=403, detail="Unauthorized access.")
+        
+    # Check if patient plan was already generated and saved on the document
+    if "patient_plan" in doc_data:
+        return doc_data["patient_plan"]
+        
+    try:
+        # Generate the patient plan using Gemini
+        summary_data = doc_data.get("summary")
+        if not isinstance(summary_data, dict):
+            summary_data = {}
+        plan = generate_patient_plan(summary_data)
+        
+        # Save it to the document metadata so we don't have to re-generate it next time
+        db.collection("documents").document(id).update({"patient_plan": plan})
+        
+        return plan
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate patient plan: {str(e)}"
+        )

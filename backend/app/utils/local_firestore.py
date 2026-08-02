@@ -23,6 +23,11 @@ class LocalFirestoreDocumentRef:
     def set(self, data):
         self.collection_mock.set_doc_data(self.id, data)
 
+    def update(self, data):
+        existing = self.collection_mock.get_doc_data(self.id) or {}
+        existing.update(data)
+        self.collection_mock.set_doc_data(self.id, existing)
+
     def delete(self):
         self.collection_mock.delete_doc_data(self.id)
 
