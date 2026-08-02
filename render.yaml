@@ -23,14 +23,14 @@ services:
       - key: FIREBASE_SERVICE_ACCOUNT_KEY
         sync: false
 
-  # Frontend Web Service
+  # Frontend Web Service (Static Site)
   - type: web
     name: medsumm-frontend
-    env: node
+    runtime: static
     rootDir: frontend
     plan: free
     buildCommand: npm install && npm run build
-    startCommand: npm run start
+    staticPublishPath: out
     envVars:
       - key: NODE_VERSION
         value: 22
