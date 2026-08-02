@@ -384,13 +384,13 @@ function DocumentDetailContent() {
                     Intake & Patient Information
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
-                    <div className="bg-slate-950/20 p-4 rounded-xl border border-slate-900">
+                    <div className="bg-slate-955 p-4 rounded-xl border border-slate-800">
                       <p className="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Patient Demographics</p>
-                      <p className="text-slate-200 mt-1.5 font-semibold leading-relaxed">{document.summary.patient_info || "Not specified"}</p>
+                      <p className="text-slate-700 mt-1.5 font-semibold leading-relaxed">{document.summary.patient_info || "Not specified"}</p>
                     </div>
-                    <div className="bg-slate-950/20 p-4 rounded-xl border border-slate-900">
+                    <div className="bg-slate-955 p-4 rounded-xl border border-slate-800">
                       <p className="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Chief Complaint</p>
-                      <p className="text-slate-200 mt-1.5 font-semibold leading-relaxed">{document.summary.chief_complaint || "Not specified"}</p>
+                      <p className="text-slate-700 mt-1.5 font-semibold leading-relaxed">{document.summary.chief_complaint || "Not specified"}</p>
                     </div>
                   </div>
                 </div>
@@ -400,7 +400,7 @@ function DocumentDetailContent() {
                     <Clipboard className="h-4.5 w-4.5 text-indigo-400" />
                     Diagnostic Lab Findings
                   </h3>
-                  <p className="text-slate-355 text-sm leading-relaxed whitespace-pre-line bg-slate-950/10 p-4 rounded-xl border border-slate-900">
+                  <p className="text-slate-700 text-sm leading-relaxed whitespace-pre-line bg-slate-955 p-4 rounded-xl border border-slate-800">
                     {document.summary.diagnostic_findings || "No specific findings extracted."}
                   </p>
                 </div>
@@ -410,7 +410,7 @@ function DocumentDetailContent() {
                     <HeartPulse className="h-4.5 w-4.5 text-cyan-400" />
                     Clinical Assessment
                   </h3>
-                  <p className="text-slate-355 text-sm leading-relaxed whitespace-pre-line bg-slate-950/10 p-4 rounded-xl border border-slate-900">
+                  <p className="text-slate-700 text-sm leading-relaxed whitespace-pre-line bg-slate-955 p-4 rounded-xl border border-slate-800">
                     {document.summary.assessment || "No diagnostic assessments extracted."}
                   </p>
                 </div>
@@ -425,7 +425,7 @@ function DocumentDetailContent() {
                   {document.summary.recommendations && document.summary.recommendations.length > 0 ? (
                     <ul className="space-y-4">
                       {document.summary.recommendations.map((rec, i) => (
-                        <li key={i} className="text-slate-300 text-sm flex items-start gap-3 bg-slate-950/20 p-3 rounded-xl border border-slate-900/60">
+                        <li key={i} className="text-slate-700 text-sm flex items-start gap-3 bg-slate-955 p-3 rounded-xl border border-slate-800">
                           <ChevronRight className="h-4 w-4 text-indigo-400 mt-0.5 shrink-0" />
                           <span>{rec}</span>
                         </li>
@@ -443,9 +443,9 @@ function DocumentDetailContent() {
                   {document.summary.glossary && document.summary.glossary.length > 0 ? (
                     <div className="space-y-4">
                       {document.summary.glossary.map((g, i) => (
-                        <div key={i} className="text-sm bg-slate-950/20 p-3.5 rounded-xl border border-slate-900/60">
+                        <div key={i} className="text-sm bg-slate-955 p-3.5 rounded-xl border border-slate-800">
                           <p className="font-bold text-indigo-400">{g.term}</p>
-                          <p className="text-slate-400 text-xs mt-1.5 leading-relaxed">{g.explanation}</p>
+                          <p className="text-slate-500 text-xs mt-1.5 leading-relaxed">{g.explanation}</p>
                         </div>
                       ))}
                     </div>
@@ -476,29 +476,29 @@ function DocumentDetailContent() {
                         <ShieldAlert className="h-4.5 w-4.5 text-indigo-400" />
                         Main Health Problem
                       </h3>
-                      <p className="text-slate-200 text-sm leading-relaxed bg-slate-950/20 p-4 rounded-xl border border-slate-900 font-semibold">
+                      <p className="text-slate-700 text-sm leading-relaxed bg-slate-955 p-4 rounded-xl border border-slate-800 font-semibold">
                         {patientPlan.main_problem}
                       </p>
                     </div>
 
                     {/* Why It Occurs */}
-                    <div className="p-6 rounded-2xl border border-slate-800 bg-slate-900/10 backdrop-blur-sm">
-                      <h3 className="text-sm font-bold text-slate-100 uppercase tracking-wider flex items-center gap-2.5 mb-4 border-b border-slate-900 pb-3">
+                    <div className="p-6 rounded-2xl border border-slate-800 bg-slate-955/40 backdrop-blur-sm">
+                      <h3 className="text-sm font-bold text-slate-100 uppercase tracking-wider flex items-center gap-2.5 mb-4 border-b border-slate-800 pb-3">
                         <AlertTriangle className="h-4.5 w-4.5 text-yellow-500" />
                         Why This Happens
                       </h3>
-                      <p className="text-slate-300 text-sm leading-relaxed bg-slate-950/20 p-4 rounded-xl border border-slate-900 leading-relaxed">
+                      <p className="text-slate-700 text-sm leading-relaxed bg-slate-955 p-4 rounded-xl border border-slate-800 leading-relaxed">
                         {patientPlan.why_it_occurs}
                       </p>
                     </div>
 
                     {/* How to Overcome */}
-                    <div className="p-6 rounded-2xl border border-slate-800 bg-slate-900/10 backdrop-blur-sm">
-                      <h3 className="text-sm font-bold text-slate-100 uppercase tracking-wider flex items-center gap-2.5 mb-4 border-b border-slate-900 pb-3">
+                    <div className="p-6 rounded-2xl border border-slate-800 bg-slate-955/40 backdrop-blur-sm">
+                      <h3 className="text-sm font-bold text-slate-100 uppercase tracking-wider flex items-center gap-2.5 mb-4 border-b border-slate-800 pb-3">
                         <CheckCircle2 className="h-4.5 w-4.5 text-emerald-400" />
                         Management & Recovery Action Steps
                       </h3>
-                      <p className="text-slate-300 text-sm leading-relaxed bg-slate-950/20 p-4 rounded-xl border border-slate-900 leading-relaxed whitespace-pre-line">
+                      <p className="text-slate-700 text-sm leading-relaxed bg-slate-955 p-4 rounded-xl border border-slate-800 leading-relaxed whitespace-pre-line">
                         {patientPlan.how_to_overcome}
                       </p>
                     </div>
@@ -515,7 +515,7 @@ function DocumentDetailContent() {
                             <span className="absolute -left-[31px] top-0 flex h-6 w-6 items-center justify-center rounded-full bg-slate-950 border border-slate-800 text-xs font-bold text-indigo-400">
                               {idx + 1}
                             </span>
-                            <h4 className="font-bold text-slate-200 text-sm">{step.day}</h4>
+                            <h4 className="font-bold text-slate-700 text-sm">{step.day}</h4>
                             <p className="text-slate-400 text-xs mt-1.5 leading-relaxed">{step.instructions}</p>
                           </div>
                         ))}
@@ -562,7 +562,7 @@ function DocumentDetailContent() {
                             {doctorsToDisplay.map((doc) => (
                               <div key={doc.id} className="p-4 rounded-xl border border-slate-800/80 bg-slate-950/20 hover:border-slate-700 transition-all flex flex-col gap-3">
                                 <div>
-                                  <h4 className="font-bold text-sm text-slate-200">{doc.name}</h4>
+                                  <h4 className="font-bold text-sm text-slate-700">{doc.name}</h4>
                                   <p className="text-[10px] text-indigo-400 font-semibold mt-0.5">{doc.specialization} • {doc.experience}</p>
                                   <p className="text-[10px] text-slate-500 mt-1">{doc.qualification} at {doc.hospital}</p>
                                   <p className="text-emerald-400 font-bold text-xs mt-2">Fee: ${doc.consultation_fee}</p>
@@ -717,7 +717,7 @@ function DocumentDetailContent() {
                       required
                       value={bookingDate}
                       onChange={(e) => setBookingDate(e.target.value)}
-                      className="w-full px-3.5 py-2 border border-slate-800 bg-slate-955 rounded-xl text-sm text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                      className="w-full px-3.5 py-2 border border-slate-800 bg-slate-955 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                     />
                   </div>
 
@@ -728,7 +728,7 @@ function DocumentDetailContent() {
                       required
                       value={bookingTime}
                       onChange={(e) => setBookingTime(e.target.value)}
-                      className="w-full px-3.5 py-2 border border-slate-800 bg-slate-955 rounded-xl text-sm text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                      className="w-full px-3.5 py-2 border border-slate-800 bg-slate-955 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                     />
                   </div>
 

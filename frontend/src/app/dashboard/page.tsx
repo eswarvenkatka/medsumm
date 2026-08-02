@@ -189,12 +189,12 @@ export default function DashboardPage() {
               <select
                 value={riskFilter}
                 onChange={(e) => setRiskFilter(e.target.value)}
-                className="bg-transparent border-none text-xs font-semibold text-slate-300 focus:outline-none cursor-pointer"
+                className="bg-transparent border-none text-xs font-semibold text-slate-700 focus:outline-none cursor-pointer"
               >
-                <option value="ALL" className="bg-slate-950 text-slate-200">All Risk Profiles</option>
-                <option value="HIGH" className="bg-slate-950 text-slate-200">Critical / High</option>
-                <option value="MEDIUM" className="bg-slate-950 text-slate-200">Moderate / Med</option>
-                <option value="LOW" className="bg-slate-950 text-slate-200">Stable / Low</option>
+                <option value="ALL" className="bg-white text-slate-700">All Risk Profiles</option>
+                <option value="HIGH" className="bg-white text-slate-700">Critical / High</option>
+                <option value="MEDIUM" className="bg-white text-slate-700">Moderate / Med</option>
+                <option value="LOW" className="bg-white text-slate-700">Stable / Low</option>
               </select>
             </div>
           </div>

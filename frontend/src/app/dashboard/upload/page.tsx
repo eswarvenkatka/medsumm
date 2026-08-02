@@ -180,7 +180,7 @@ export default function UploadPage() {
                     </div>
                   ) : (
                     <div>
-                      <p className="text-slate-200 font-bold text-sm">Drag and drop file here, or click to browse</p>
+                      <p className="text-slate-700 font-bold text-sm">Drag and drop file here, or click to browse</p>
                       <p className="text-slate-500 text-xs mt-1.5">PDF, Word, or Image clinical documents (Max size 10MB)</p>
                     </div>
                   )}
